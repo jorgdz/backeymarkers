@@ -105,13 +105,38 @@ exports.uploadImage = async (req, res, next) => {
 	try
 	{
 		// GET ID USER AUTH
-	  	//const userId = req.user._id;
-	  	await Dropbox.dropboxConnect();
+	  	const userId = req.user._id;
+	  	var fileName = 'No se ha subido..';
+
+	  	if (req.files) 
+	  	{
+	  		var file_path = req.files.image.path;
+	  		var file_name = file_path.split('\\')[2];
+	  		
+	  		await Dropbox.dropboxConnect(file_path, file_name)
+	  			.then(resDropbox => {
+	  				
+	  				let link = resDropbox.replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com');
+			  		console.log(link);
+
+			  		await User.findByIdAndUpdate(userId, { image: link });
+
+			  		res.status(200).send({
+						message: 'Se ha actualizado su imagen de perfil !!'
+					});
+
+	  			}).catch(err => {
+	  				console.log(err);
+
+	  				return res.status(400).send({
+						message: 'No se ha podido subir la imagen, intente luego'
+					});
+	  			});
+	  	}
+
 	}
 	catch(error)
 	{
-		console.log(error);
-
 		return res.status(500).send({
 			message: 'Ha ocurrido un error interno en el servidor !!'
 		});

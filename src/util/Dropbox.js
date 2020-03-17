@@ -1,31 +1,69 @@
 const dropboxV2Api = require('dropbox-v2-api');
 const fs = require('fs');
 
-exports.dropboxConnect = async () => {
-	// dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw
+exports.dropboxConnect = (file_path, file_name) => {
+	return new Promise((resolve, reject) => {
+		const dropbox = dropboxV2Api.authenticate({
+		    token: process.env.DROPBOX_TOKEN
+		});
 
-	// create session ref:
-	const dropbox = dropboxV2Api.authenticate({
-	    token: process.env.DROPBOX_TOKEN
+		// dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw
+	
+		// use session ref to call API, i.e.:
+		/*dropbox({
+		    resource: 'users/get_account',
+		    parameters: {
+		        'account_id': 'dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw'
+		    }
+		}, (err, result, response) => {
+		    if (err) { return console.log(err); }
+		    console.log(result);
+		});*/
+
+
+		// DESCARGAR IMAGE
+		/*dropbox({
+		    resource: 'files/download',
+		    parameters: {
+		        path: '/recuerdo.png'
+		    }
+		}, (err, result, response) => {
+		    console.log(result);
+		}).pipe(fs.createWriteStream('./image.jpg'));*/
+
+		dropbox({
+		    resource: 'files/upload',
+		    parameters: {
+		        path: '/' + file_name
+		    },
+		    readStream: fs.createReadStream(file_path)
+		}, (err, result, response) => {
+		   	if (response && result) 
+		   	{
+		   		dropbox({
+				    resource: 'sharing/create_shared_link_with_settings',
+				    parameters: {
+				        path: '/' + file_name,
+				        settings: {
+					        "requested_visibility": "public"
+				    	}
+				    },
+				}, (error, result2, response2) => {
+					if (response2 && result2) 
+		   			{
+		   				console.log(response2.body.url);
+				   		return resolve(response2.body.url);
+		   			}
+		   			else if(error)
+		   			{
+		   				return reject(error);
+		   			}
+				});
+		   	}
+		   	else if(err)
+		   	{
+		   		return reject(err);
+		   	}
+		});
 	});
-
-	// use session ref to call API, i.e.:
-	/*dropbox({
-	    resource: 'users/get_account',
-	    parameters: {
-	        'account_id': 'dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw'
-	    }
-	}, (err, result, response) => {
-	    if (err) { return console.log(err); }
-	    console.log(result);
-	});*/
-
-	dropbox({
-	    resource: 'files/download',
-	    parameters: {
-	        path: '/recuerdo.png'
-	    }
-	}, (err, result, response) => {
-	    console.log(result);
-	}).pipe(fs.createWriteStream('./image.jpg'));
 }
