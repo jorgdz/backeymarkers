@@ -1,11 +1,14 @@
 'use strict'
 
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const MarkerSchema = new Schema({
+const markerSchema = new mongoose.Schema({
 	link: String,
-	folder: { type: Schema.ObjectId, ref: 'Folder' }
+	name: String,
+	folder: { 
+		type: mongoose.Schema.ObjectId, 
+		ref: 'Folder' 
+	}
 });
 
-module.exports = mongoose.model('Marker', MarkerSchema);
+module.exports = mongoose.model('Marker', markerSchema);

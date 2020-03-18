@@ -1,22 +1,22 @@
 'use strict'
 
 const mongoose = require('mongoose');
-const uniqueValidador = require('mongoose-unique-validator');
 
-const Schema = mongoose.Schema;
-
-const FolderSchema = new Schema({
+const folderSchema = new mongoose.Schema({
 	name: {
 		type: String,
-	  	required: [true, "Debes especificar un nombre para el Folder !!"],
-        unique: true,
-        uniqueCaseInsensitive: true,
-	},
+	  	required: [true, "Debes especificar un nombre para el Folder !!"]
+    },
 	description: String,
-	user: { type: Schema.ObjectId, ref: 'User' }
-});
+	user: { 
+		type: mongoose.Schema.Types.ObjectId, ref: 'User' 
+	},
+	markers: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Marker'
+		}
+	]
+}, {timestamps:  true});
 
-FolderSchema.plugin(uniqueValidador, { message: '{PATH} ya existe !!' });
-
-const Folder = mongoose.model('Folder', FolderSchema);
-module.exports = Folder;
+module.exports = mongoose.model('Folder', folderSchema);

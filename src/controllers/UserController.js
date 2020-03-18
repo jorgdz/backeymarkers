@@ -1,6 +1,9 @@
 'use strict'
 
 const User = require('../models/User');
+const Folder = require('../models/Folder');
+const Marker = require('../models/Marker');
+
 const Helper = require('../util/Helper');
 const Dropbox = require('../util/Dropbox');
 
@@ -106,8 +109,7 @@ exports.uploadImage = async (req, res, next) => {
 	{
 		// GET ID USER AUTH
 	  	const userId = req.user._id;
-	  	var fileName = 'No se ha subido..';
-
+	 
 	  	if (req.files) 
 	  	{
 	  		var file_path = req.files.image.path;
@@ -115,17 +117,20 @@ exports.uploadImage = async (req, res, next) => {
 	  		
 	  		await Dropbox.dropboxConnect(file_path, file_name)
 	  			.then(resDropbox => {
-	  				
 	  				let link = resDropbox.replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com');
-			  		console.log(link);
-
-			  		await User.findByIdAndUpdate(userId, { image: link });
-
+			  		return User.findByIdAndUpdate(userId, { image: link });
+	  			})
+	  			.then(() => {
+	  				const user = User.findById(userId).select('-password');
+	  				return user;	
+	  			})
+	  			.then((resUser) => {
 			  		res.status(200).send({
+			  			data: resUser,
 						message: 'Se ha actualizado su imagen de perfil !!'
 					});
-
-	  			}).catch(err => {
+	  			})
+	  			.catch(err => {
 	  				console.log(err);
 
 	  				return res.status(400).send({
@@ -151,12 +156,27 @@ exports.delete = async (req, res, next) => {
 	{
 		const userId = req.params.id;
 
-		await User.findByIdAndDelete(userId);
-		
-		res.status(200).json({
-			data: null,
-			message: 'Usuario eliminado !!'
-		});
+		//await User.findByIdAndDelete(userId);
+		await User.findByIdAndRemove(userId)
+			.then(userRemoved => {
+				return Folder.deleteMany({ user: userRemoved._id });
+			})
+			.then(folderRemoved => {
+				console.log(folderRemoved);
+				
+				return Marker.deleteMany({ folder: folderRemoved._id });
+			})
+			.then(markerRemoved => {
+				res.status(200).json({
+					data: null,
+					message: 'Usuario eliminado !!'
+				});
+			})
+			.catch(err => {
+				return res.status(400).send({
+					message: 'Ups!, parece que ha ocurrido un fallo al intentar borrar el usuario'
+				});
+			});
 	} 
 	catch(error)
 	{

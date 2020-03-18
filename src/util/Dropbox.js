@@ -3,33 +3,10 @@ const fs = require('fs');
 
 exports.dropboxConnect = (file_path, file_name) => {
 	return new Promise((resolve, reject) => {
+
 		const dropbox = dropboxV2Api.authenticate({
 		    token: process.env.DROPBOX_TOKEN
 		});
-
-		// dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw
-	
-		// use session ref to call API, i.e.:
-		/*dropbox({
-		    resource: 'users/get_account',
-		    parameters: {
-		        'account_id': 'dbid:AACtmxwSRR-0WvU5EnMDg01wsV2lV4WRpNw'
-		    }
-		}, (err, result, response) => {
-		    if (err) { return console.log(err); }
-		    console.log(result);
-		});*/
-
-
-		// DESCARGAR IMAGE
-		/*dropbox({
-		    resource: 'files/download',
-		    parameters: {
-		        path: '/recuerdo.png'
-		    }
-		}, (err, result, response) => {
-		    console.log(result);
-		}).pipe(fs.createWriteStream('./image.jpg'));*/
 
 		dropbox({
 		    resource: 'files/upload',
@@ -65,5 +42,6 @@ exports.dropboxConnect = (file_path, file_name) => {
 		   		return reject(err);
 		   	}
 		});
+		
 	});
 }

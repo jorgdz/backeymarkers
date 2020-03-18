@@ -3,8 +3,7 @@
 const mongoose = require('mongoose');
 const uniqueValidador = require('mongoose-unique-validator');
 
-const Schema = mongoose.Schema;
-const UserSchema = new Schema({
+const userSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: [true, "El nombre es obligatorio"]
@@ -40,7 +39,6 @@ const UserSchema = new Schema({
  	}
 });
 
-UserSchema.plugin(uniqueValidador, { message: '{PATH} debe ser único' });
+userSchema.plugin(uniqueValidador, { message: '{PATH} debe ser único' });
 
-const User = mongoose.model('User', UserSchema);
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

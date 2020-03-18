@@ -9,10 +9,11 @@ const path = require('path');
 
 
 // REQUIRE AND CONFIG ENV VAR
-require('dotenv').config({
-	path: path.join(__dirname, '../.env')
-});
-
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config({
+		path: path.join(__dirname, '../.env')
+	});
+}
 
 // REQUIRE MODULES APPLICATION
 const JwtAuthorization = require('./middlewares/JwtAuthorization');
@@ -28,7 +29,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.URL, { useNewUrlParser:true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB_URI, { useNewUrlParser:true, useUnifiedTopology: true })
 	.then(() => {
 		console.log('Conexión OK');
 	})
@@ -37,7 +38,7 @@ mongoose.connect(process.env.URL, { useNewUrlParser:true, useUnifiedTopology: tr
 
 // CONFIG REQUEST IN JSON FORMAT
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
 
 // CONFIG CORS
 app.use((req, res, next) => {
