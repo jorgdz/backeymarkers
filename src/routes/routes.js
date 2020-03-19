@@ -13,7 +13,8 @@ const PasswordController = require('../controllers/PasswordController');
 const Authentication = require('../middlewares/Authentication');
 const Authorization = require('../middlewares/Authorization');
 
-const MultipartMiddleware = multipart({ uploadDir: './src/tmp' });
+//const MultipartMiddleware = multipart({ uploadDir: './src/tmp' });
+const MultipartMiddleware = multipart();
 
 // ROUTE PUBLIC
 router.post('/register', LoginController.register);

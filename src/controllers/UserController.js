@@ -118,6 +118,8 @@ exports.uploadImage = async (req, res, next) => {
 	  		var file_path = req.files.image.path;
 	  		var file_name = file_path.split('\\')[2];
 	  		
+	  		console.log('TEMPORAL HEROKU: ' + file_path);
+
 	  		await Dropbox.dropboxConnect(file_path, file_name)
 	  			.then(resDropbox => {
 	  				let link = resDropbox.replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com');
