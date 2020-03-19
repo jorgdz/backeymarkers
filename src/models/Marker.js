@@ -12,6 +12,6 @@ const markerSchema = new mongoose.Schema({
 		type: mongoose.Schema.ObjectId, 
 		ref: 'Folder' 
 	}
-});
+}, {timestamps:  true});
 
 module.exports = mongoose.model('Marker', markerSchema);
