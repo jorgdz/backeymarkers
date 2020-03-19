@@ -25,22 +25,27 @@ router.post('/upload-image', [Authentication.authenticated, MultipartMiddleware]
 
 
 // USERS
-router.get('/user/:id', Authentication.authenticated, Authorization.grantAccess('GET_USER_BY_ID'), UserController.show);
-router.get('/users', Authentication.authenticated, Authorization.grantAccess('GET_USERS'), UserController.index);
-router.put('/user', Authentication.authenticated, Authorization.grantAccess('UPDATE_USER_AUTH'), UserController.update);
-router.put('/user/:id', Authentication.authenticated, Authorization.grantAccess('UPDATE_USERS'), UserController.update);
-router.delete('/user/:id', Authentication.authenticated, Authorization.grantAccess('DELETE_USERS'), UserController.delete);
+router.get('/user/:id', Authentication.authenticated, Authorization.hasAuthority('GET_USER_BY_ID'), UserController.show);
+router.get('/users', Authentication.authenticated, Authorization.hasAuthority('GET_USERS'), UserController.index);
+router.put('/user', Authentication.authenticated, Authorization.hasAuthority('UPDATE_USER_AUTH'), UserController.update);
+router.put('/user/:id', Authentication.authenticated, Authorization.hasAuthority('UPDATE_USERS'), UserController.update);
+router.delete('/user/:id', Authentication.authenticated, Authorization.hasAuthority('DELETE_USERS'), UserController.delete);
 
 
 // FOLDERS
-router.get('/folders', Authentication.authenticated, Authorization.grantAccess('GET_FOLDERS'), FolderController.index);
-router.get('/myfolders', Authentication.authenticated, Authorization.grantAccess('GET_MY_FOLDERS'), FolderController.myfolders);
-router.get('/folder/:id', Authentication.authenticated, Authorization.grantAccess('GET_FOLDER_BY_ID'), FolderController.show);
-router.post('/folder', Authentication.authenticated, Authorization.grantAccess('CREATE_FOLDER'), FolderController.save);
+router.get('/folders', Authentication.authenticated, Authorization.hasAuthority('GET_FOLDERS'), FolderController.index);
+router.get('/myfolders', Authentication.authenticated, Authorization.hasAuthority('GET_MY_FOLDERS'), FolderController.myfolders);
+router.get('/folder/:id', Authentication.authenticated, Authorization.hasAuthority('GET_FOLDER_BY_ID'), FolderController.show);
+router.post('/folder', Authentication.authenticated, Authorization.hasAuthority('CREATE_FOLDER'), FolderController.save);
+router.put('/folder/:id', Authentication.authenticated, Authorization.hasAuthority('UPDATE_FOLDER'), FolderController.update);
+router.delete('/folder/:id', Authentication.authenticated, Authorization.hasAuthority('DELETE_FOLDER'), FolderController.delete);
 
 
 // MARKERS
-router.get('/mymarkers/:id', Authentication.authenticated, Authorization.grantAccess('GET_MY_MARKERS'), MarkerController.mymarkers);
-router.post('/marker', Authentication.authenticated, Authorization.grantAccess('CREATE_MARKER'), MarkerController.save);
+router.get('/mymarkers/:id', Authentication.authenticated, Authorization.hasAuthority('GET_MY_MARKERS'), MarkerController.mymarkers);
+router.get('/marker/:id', Authentication.authenticated, Authorization.hasAuthority('GET_MARKER_BY_ID'), MarkerController.show);
+router.post('/marker', Authentication.authenticated, Authorization.hasAuthority('CREATE_MARKER'), MarkerController.save);
+router.put('/marker/:id', Authentication.authenticated, Authorization.hasAuthority('UPDATE_MARKER'), MarkerController.update);
+router.delete('/marker/:id', Authentication.authenticated, Authorization.hasAuthority('DELETE_MARKER'), MarkerController.delete);
 
 module.exports = router;

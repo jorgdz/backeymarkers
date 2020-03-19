@@ -40,6 +40,7 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser:true, useUnifiedTopology:
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 // CONFIG CORS
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
@@ -49,7 +50,6 @@ app.use((req, res, next) => {
 
 	next();
 });
-
 
 
 // VERIFY AUTHORIZATION WITH TOKEN IN ALL REQUEST
@@ -65,9 +65,24 @@ app.listen(PORT, () => {
 	console.log('Servidor iniciado en el puerto: ' + PORT);
 });
 
+
+// UNAUTHORIZED ACCCESS
 app.get(['/', '/api'], (req, res) => {
 	res.status(403).send({
 		date: new Date(),
 		message: 'No autorizado !!'
 	});
+});
+
+
+// 404 NOT FOUND URL
+app.use((req, res, next) => {
+	res.status(404);
+
+	if (req.accepts('json')) 
+	{
+		return res.send({
+			message: 'No encontrado !!'
+		});
+	}
 });

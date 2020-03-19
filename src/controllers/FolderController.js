@@ -1,6 +1,7 @@
 'use strict'
 
 const Folder = require('../models/Folder');
+const Marker = require('../models/Marker');
 
 
 // GET ALL FOLDERS
@@ -26,7 +27,7 @@ exports.myfolders = async (req, res, next) => {
 // GET FOLDER BY ID
 exports.show = async (req, res, next) => {
 	const folderId = req.params.id;
-	
+
 	await Folder.findById(folderId).populate("markers").exec()
 		.then(folder => {
 			if (folder) {
@@ -35,7 +36,7 @@ exports.show = async (req, res, next) => {
 				});
             } else {
                 res.json({
-                    message: "Folder no encontrado !!"
+                    message: "Carpeta no encontrada !!"
                 });
             }
 		}).catch(err => {
@@ -65,7 +66,8 @@ exports.save = async (req, res, next) => {
 		await folder.save()
 			.then(folderCreated => {
 				res.status(202).json({
-					data: folderCreated
+					data: folderCreated,
+					message: 'Se ha agregado una carpeta !!'
 				});
 			})
 			.catch(err => {
@@ -77,6 +79,77 @@ exports.save = async (req, res, next) => {
 
 				return res.status(400).send({
 					error: arrayErrors
+				});
+			});
+	}
+	catch(error)
+	{
+		return res.status(500).send({
+			message: 'Ha ocurrido un error interno en el servidor !!'
+		});
+	}
+}
+
+
+// UPDATE FOLDER
+exports.update = async (req, res, next) => {
+	try
+	{
+		const folderId = req.params.id;
+
+		const update = {
+			name: req.body.name,
+			description: req.body.description,
+		};
+
+		// FIND AND MODIFY FOLDER
+		await Folder.findByIdAndUpdate(folderId, update, { new: true, runValidators: true, context: 'query' })
+			.then(folderUpdated => {
+				res.status(200).json({
+					data: folderUpdated,
+					message: 'Carpeta actualizada !!'
+				});
+			})
+			.catch(err => {
+				let arrayErrors = [];
+
+				err.message.replace('Validation failed: ', '').split(', ').forEach(e => {
+					arrayErrors.push(e.split(': ')[1]);
+				});
+
+				return res.status(400).send({
+					error: arrayErrors
+				});
+			});
+	}
+	catch(error)
+	{
+		return res.status(500).send({
+			message: 'Ha ocurrido un error interno en el servidor !!'
+		});
+	}	
+}
+
+
+// DELETE FOLDER
+exports.delete = async (req, res, next) => {
+	try
+	{
+		const folderId = req.params.id;
+
+		await Folder.findByIdAndDelete(folderId)
+			.then(folderDeleted => {
+				return Marker.deleteMany({ folder: folderId });
+			})
+			.then(markerDeleted => {
+				return res.status(200).send({
+					message: 'Carpeta eliminada !!'
+				});
+			})
+			.catch(err => {
+				return res.status(400).send({
+					message: 'Ha ocurrido un error al intentar borrar la carpeta, intente luego !!',
+					error: err
 				});
 			});
 	}
