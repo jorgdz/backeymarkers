@@ -8,6 +8,7 @@ const LoginController = require('../controllers/LoginController');
 const UserController = require('../controllers/UserController');
 const FolderController = require('../controllers/FolderController');
 const MarkerController = require('../controllers/MarkerController');
+const PasswordController = require('../controllers/PasswordController');
 
 const Authentication = require('../middlewares/Authentication');
 const Authorization = require('../middlewares/Authorization');
@@ -47,5 +48,9 @@ router.get('/marker/:id', Authentication.authenticated, Authorization.hasAuthori
 router.post('/marker', Authentication.authenticated, Authorization.hasAuthority('CREATE_MARKER'), MarkerController.save);
 router.put('/marker/:id', Authentication.authenticated, Authorization.hasAuthority('UPDATE_MARKER'), MarkerController.update);
 router.delete('/marker/:id', Authentication.authenticated, Authorization.hasAuthority('DELETE_MARKER'), MarkerController.delete);
+
+
+// RANDOM PASSWORD
+router.post('/password', Authentication.authenticated, Authorization.hasAuthority('GENERATE_PASSWORD'), PasswordController.generate);
 
 module.exports = router;

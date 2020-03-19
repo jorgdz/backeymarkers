@@ -29,7 +29,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.DB_URI, { useNewUrlParser:true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser:true, useUnifiedTopology: true })
 	.then(() => {
 		console.log('Conexión OK');
 	})
@@ -62,7 +62,7 @@ app.use('/api', routes);
 
 // SERVER LISTEN
 app.listen(PORT, () => {
-	console.log('Servidor iniciado en el puerto: ' + PORT);
+	console.log('Servicio iniciado en el puerto: ' + PORT);
 });
 
 
