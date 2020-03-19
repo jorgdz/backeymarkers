@@ -158,23 +158,53 @@ exports.delete = async (req, res, next) => {
 
 		//await User.findByIdAndDelete(userId);
 		await User.findByIdAndRemove(userId)
-			.then(userRemoved => {
-				return Folder.deleteMany({ user: userRemoved._id });
+			.then(userDeleted => {
+
+				return Folder.find({ user: userDeleted._id });
+
 			})
-			.then(folderRemoved => {
-				console.log(folderRemoved);
-				
-				return Marker.deleteMany({ folder: folderRemoved._id });
+			.then(folders => {
+				let arrayMarkers = [];
+
+				return folders.map( f => {
+
+					f.markers.map(m => {
+						arrayMarkers.push(m);
+					});
+
+				});
+
+				return arrayMarkers;
 			})
-			.then(markerRemoved => {
-				res.status(200).json({
-					data: null,
+			.then(markers => {
+				console.log(markers)
+				return Marker.remove({ _id: { $in: markers }});
+				// DELETE MARKERS
+				/*return markers.forEach( m => {
+					console.log(m + '--')
+
+					Marker.deleteMany({ _id: m });
+				});*/
+				/*Marker.remove({ _id: {$in: markers}}, (err, result) => {
+					if (err) 
+					{
+						return res.status(400).send({
+							message: 'Ups!!, ha ocurrido un error mientras se eliminaba los marcadores!'
+						});
+					}
+				});*/
+			})
+			.then((markerDeleted) => {
+				return Folder.deleteMany({ user: userId });
+			})
+			.then((folderDeleted) => {
+				return res.status(200).send({
 					message: 'Usuario eliminado !!'
 				});
 			})
 			.catch(err => {
 				return res.status(400).send({
-					message: 'Ups!, parece que ha ocurrido un fallo al intentar borrar el usuario'
+					error: err
 				});
 			});
 	} 

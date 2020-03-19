@@ -26,6 +26,7 @@ exports.myfolders = async (req, res, next) => {
 // GET FOLDER BY ID
 exports.show = async (req, res, next) => {
 	const folderId = req.params.id;
+	
 	await Folder.findById(folderId).populate("markers").exec()
 		.then(folder => {
 			if (folder) {

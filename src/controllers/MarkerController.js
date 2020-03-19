@@ -29,6 +29,7 @@ exports.save = async (req, res, next) => {
 		await marker.save()
 			.then(markerCreated => {
 				Folder.findById(req.body.folder, (er, folder) => {
+
 					folder.markers.push(markerCreated._id);
 					folder.save((errFolder, saveFolder) => {
 						if (saveFolder) 
@@ -38,6 +39,7 @@ exports.save = async (req, res, next) => {
 							});
 						}	
 					});
+					
 				});
 			})
 			.catch(err => {
