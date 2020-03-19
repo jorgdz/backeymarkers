@@ -47,11 +47,7 @@ exports.show = async (req, res, next) => {
 exports.save = async (req, res, next) => {
 	try
 	{
-		const marker = new Marker({
-			link: req.body.link,
-			name: req.body.name,
-			folder: req.body.folder,
-		});
+		const marker = new Marker(req.body);
 
 		// SAVE MARKER
 		await marker.save()
@@ -92,10 +88,7 @@ exports.update = async (req, res, next) => {
 	{
 		const markerId = req.params.id;
 
-		const update = {
-			link: req.body.link,
-	  		name: req.body.name
-		}
+		const update = req.body;
 
 		await Marker.findByIdAndUpdate(markerId, update)
 			.then(m => {				

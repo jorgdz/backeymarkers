@@ -25,7 +25,7 @@ exports.hasAuthority = (permission) => {
 				else
 				{
 					return res.status(403).json({
-						error: 'No tienes permisos para acceder a este recurso'
+						message: 'No tienes permisos para acceder a este recurso'
 					});
 				}
 			}

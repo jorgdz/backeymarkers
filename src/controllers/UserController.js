@@ -19,6 +19,7 @@ exports.getUserAuth = (req, res, next) => {
 };
 
 
+
 // GET ALL USERS
 exports.index = async (req, res, next) => {
 	const users = await User.find({}).select('-password');
@@ -27,6 +28,7 @@ exports.index = async (req, res, next) => {
 		data: users
 	});
 }
+
 
 
 // GET USER BY ID
@@ -54,6 +56,7 @@ exports.show = async (req, res, next) => {
 		});
 	}
 }
+
 
 
 // UPDATE USER
@@ -149,7 +152,7 @@ exports.uploadImage = async (req, res, next) => {
 }	
 
 
-
+ /********************** NOTE: NO FUNTIONAL  ***********************/
 // DELETE USER
 exports.delete = async (req, res, next) => {
 	try
