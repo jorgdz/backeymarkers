@@ -3,7 +3,12 @@
 const mongoose = require('mongoose');
 
 const markerSchema = new mongoose.Schema({
-	link: String,
+   	link: String,
+	title: String,
+    description: String,
+    image: String,
+    source: String,
+   	url: String,
 	name: String,
 	username: String,
 	email: String,
