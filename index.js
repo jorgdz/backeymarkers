@@ -4,20 +4,19 @@
 const app = require('express')();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 const path = require('path');
 
 
 // REQUIRE AND CONFIG ENV VAR
 if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config({
-		path: path.join(__dirname, '../.env')
+		path: path.join(__dirname, './env')
 	});
 }
 
 // REQUIRE MODULES APPLICATION
-const JwtAuthorization = require('./middlewares/JwtAuthorization');
-const routes = require('./routes/routes');
+const JwtAuthorization = require('./src/middlewares/JwtAuthorization');
+const routes = require('./src/routes/routes');
 
 
 // SET PORT

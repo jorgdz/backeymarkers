@@ -2,10 +2,10 @@
   "name": "backeymarkers",
   "version": "1.0.0",
   "description": "Application for markers and key generator",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "node index.js"
   },
   "author": "Jorge Diaz Montoya",
   "license": "MIT",
