@@ -23,6 +23,29 @@ exports.myfolders = async (req, res, next) => {
 	});
 }
 
+// GET COUNT FOLDERS
+exports.myCountFolders = async (req, res, next) => {
+	let folders = await Folder.find({ user: req.user._id });
+	let markers = [];
+	folders.map( f => {
+
+		f.markers.map(m => {
+			markers.push(m);
+		});
+
+	});
+
+	const countFolder = folders.length;
+	const countMarker = markers.length;
+
+	res.status(200).json({
+		data: {
+			countFolders: countFolder,
+			countMarkers: countMarker
+		}
+	});
+}
+
 
 // GET FOLDER BY ID
 exports.show = async (req, res, next) => {

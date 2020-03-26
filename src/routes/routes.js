@@ -9,6 +9,7 @@ const UserController = require('../controllers/UserController');
 const FolderController = require('../controllers/FolderController');
 const MarkerController = require('../controllers/MarkerController');
 const PasswordController = require('../controllers/PasswordController');
+const ScrapeController = require('../controllers/ScrapeController');
 
 const Authentication = require('../middlewares/Authentication');
 const Authorization = require('../middlewares/Authorization');
@@ -19,6 +20,7 @@ const MultipartMiddleware = multipart();
 // ROUTE PUBLIC
 router.post('/register', LoginController.register);
 router.post('/login', LoginController.login);
+router.post('/scrape', ScrapeController.metadata);
 
 
 // ROUTE PRIVATE
@@ -37,6 +39,7 @@ router.delete('/user/:id', Authentication.authenticated, Authorization.hasAuthor
 // FOLDERS
 router.get('/folders', Authentication.authenticated, Authorization.hasAuthority('GET_FOLDERS'), FolderController.index);
 router.get('/myfolders', Authentication.authenticated, Authorization.hasAuthority('GET_MY_FOLDERS'), FolderController.myfolders);
+router.get('/mycountfolders', Authentication.authenticated, Authorization.hasAuthority('GET_MY_COUNT_FOLDERS'), FolderController.myCountFolders);
 router.get('/folder/:id', Authentication.authenticated, Authorization.hasAuthority('GET_FOLDER_BY_ID'), FolderController.show);
 router.post('/folder', Authentication.authenticated, Authorization.hasAuthority('CREATE_FOLDER'), FolderController.save);
 router.put('/folder/:id', Authentication.authenticated, Authorization.hasAuthority('UPDATE_FOLDER'), FolderController.update);
