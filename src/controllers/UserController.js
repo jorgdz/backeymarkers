@@ -156,14 +156,12 @@ exports.uploadImage = async (req, res, next) => {
 }	
 
 
- /********************** NOTE: NO FUNTIONAL  ***********************/
 // DELETE USER
 exports.delete = async (req, res, next) => {
 	try
 	{
 		const userId = req.params.id;
-
-		//await User.findByIdAndDelete(userId);
+		
 		await User.findByIdAndRemove(userId)
 			.then(userDeleted => {
 
@@ -173,7 +171,7 @@ exports.delete = async (req, res, next) => {
 			.then(folders => {
 				let arrayMarkers = [];
 
-				return folders.map( f => {
+				folders.map( f => {
 
 					f.markers.map(m => {
 						arrayMarkers.push(m);
@@ -184,22 +182,9 @@ exports.delete = async (req, res, next) => {
 				return arrayMarkers;
 			})
 			.then(markers => {
-				console.log(markers)
-				return Marker.remove({ _id: { $in: markers }});
-				// DELETE MARKERS
-				/*return markers.forEach( m => {
-					console.log(m + '--')
 
-					Marker.deleteMany({ _id: m });
-				});*/
-				/*Marker.remove({ _id: {$in: markers}}, (err, result) => {
-					if (err) 
-					{
-						return res.status(400).send({
-							message: 'Ups!!, ha ocurrido un error mientras se eliminaba los marcadores!'
-						});
-					}
-				});*/
+				return Marker.deleteMany({ _id: {$in: markers} });
+
 			})
 			.then((markerDeleted) => {
 				return Folder.deleteMany({ user: userId });
